@@ -28,12 +28,9 @@ module Puppet::ResourceApi
         should_ensure = should.nil? ? 'absent' : should[:ensure].to_s
 
         name_hash = if namevars.length > 1
-                      # pass a name_hash containing the values of all namevars
-                      name_hash = {}
-                      namevars.each do |namevar|
-                        name_hash[namevar] = change[:should][namevar]
-                      end
-                      name_hash
+                      # pass a name_hash containing the values of all namevars;
+                      # the changes key already holds them, `should` may be nil on deletion
+                      name.is_a?(Hash) ? name : namevars.to_h { |namevar| [namevar, change.dig(:should, namevar)] }
                     else
                       name
                     end

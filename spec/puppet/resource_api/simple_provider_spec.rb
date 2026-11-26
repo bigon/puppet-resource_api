@@ -681,4 +681,27 @@ RSpec.describe Puppet::ResourceApi::SimpleProvider do
       end
     end
   end
+
+  context 'with a single change to delete a composite namevar resource with a nil :should' do
+    let(:changes) do
+      {
+        { name1: 'title1', name2: 'title2' } =>
+          {
+            is: { name1: 'title1', name2: 'title2', ensure: 'present' },
+            should: nil
+          }
+      }
+    end
+
+    before do
+      allow(context).to receive(:deleting).with({ name1: 'title1', name2: 'title2' }).and_yield
+      allow(type_def).to receive(:feature?).with('simple_get_filter')
+      allow(type_def).to receive(:namevars).and_return(%i[name1 name2])
+    end
+
+    it 'calls delete with the namevars from the changes key' do
+      expect(provider).to receive(:delete).with(context, { name1: 'title1', name2: 'title2' }).once
+      provider.set(context, changes)
+    end
+  end
 end
