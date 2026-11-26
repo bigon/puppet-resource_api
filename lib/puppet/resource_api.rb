@@ -304,6 +304,9 @@ module Puppet::ResourceApi
           # allow a :title from the provider to override the default
           result = if resource_hash.key? :title
                      new(title: resource_hash[:title])
+                   elsif type_definition.namevars.size > 1
+                     # pass the namevar values explicitly: the hash title cannot be parsed back into its components
+                     new({ title: build_title(type_definition, resource_hash) }.merge(resource_hash.slice(*type_definition.namevars)))
                    else
                      new(title: build_title(type_definition, resource_hash))
                    end

@@ -21,7 +21,7 @@ module Puppet::ResourceApi
     end
 
     def title_patterns
-      definition[:title_patterns] ||= []
+      definition[:title_patterns] || []
     end
 
     def validate_schema(definition, attr_key)

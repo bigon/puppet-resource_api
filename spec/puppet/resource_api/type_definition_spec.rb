@@ -27,6 +27,17 @@ RSpec.describe Puppet::ResourceApi::TypeDefinition do
 
   it { expect { described_class.new(nil) }.to raise_error Puppet::DevError, /TypeDefinition must be a Hash/ }
 
+  describe '#title_patterns' do
+    it 'returns an empty array when no title_patterns are defined' do
+      expect(type.title_patterns).to eq []
+    end
+
+    it 'does not add title_patterns to the definition' do
+      type.title_patterns
+      expect(type.definition).not_to have_key(:title_patterns)
+    end
+  end
+
   describe '#ensurable?' do
     context 'when type is ensurable' do
       let(:definition) { { name: 'ensurable', attributes: { ensure: { type: 'Enum[absent, present]' } } } }

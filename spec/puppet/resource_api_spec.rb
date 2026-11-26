@@ -1167,6 +1167,12 @@ RSpec.describe Puppet::ResourceApi do
         it 'uses the title provided by the provider' do
           expect(type_class.instances[0].title).to eq(manager: 'yum', package: 'php')
         end
+
+        it 'sets the namevars from the provided values' do
+          instance = type_class.instances[0]
+          expect(instance[:package]).to eq 'php'
+          expect(instance[:manager]).to eq 'yum'
+        end
       end
 
       context 'when flushing an instance' do
